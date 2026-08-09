@@ -2,12 +2,23 @@
 import React, { useState } from "react";
 import "./App.css";
 
+// ============================================================
+// API CONFIGURATION
+// ============================================================
+//
 // Local development:
+// Create frontend/.env.local:
 // VITE_API_URL=http://127.0.0.1:5000
 //
 // Production:
 // Set VITE_API_URL in Vercel Environment Variables to your
-// publicly deployed Flask backend URL.
+// deployed Flask backend URL, for example:
+// https://your-flask-api.onrender.com
+//
+// IMPORTANT:
+// Never use 127.0.0.1 or localhost for the deployed Vercel app.
+// ============================================================
+
 const API_URL =
   import.meta.env.VITE_API_URL || "http://127.0.0.1:5000";
 
@@ -77,7 +88,9 @@ function App() {
       console.error("Prediction error:", err);
 
       setError(
-        `Unable to connect to the ML server. API: ${API_URL}`
+        err.message
+          ? `Prediction failed: ${err.message}`
+          : `Unable to connect to ML server. API: ${API_URL}`
       );
     } finally {
       setLoading(false);
@@ -100,9 +113,11 @@ function App() {
 
   return (
     <div className="app">
+
       {/* HEADER */}
       <header className="header">
         <div className="header-content">
+
           <div className="brand">
             <div className="brand-icon">✚</div>
 
@@ -116,10 +131,12 @@ function App() {
             <span className="status-dot"></span>
             ML System
           </div>
+
         </div>
       </header>
 
       <main className="container">
+
         {/* INTRO */}
         <section className="intro">
           <h2>Diabetes Risk Prediction</h2>
@@ -132,6 +149,7 @@ function App() {
 
         {/* INPUT CARD */}
         <section className="card">
+
           <div className="card-title">
             <div>
               <h3>Patient Information</h3>
@@ -144,7 +162,9 @@ function App() {
           </div>
 
           <form onSubmit={handlePredict}>
+
             <div className="form-grid">
+
               <InputField
                 label="Pregnancies"
                 name="Pregnancies"
@@ -226,9 +246,11 @@ function App() {
                 min="1"
                 required
               />
+
             </div>
 
             <div className="form-actions">
+
               <button
                 type="button"
                 className="reset-button"
@@ -254,7 +276,9 @@ function App() {
                   </>
                 )}
               </button>
+
             </div>
+
           </form>
         </section>
 
@@ -273,6 +297,7 @@ function App() {
         {/* RESULTS */}
         {results && (
           <section className="results-section">
+
             {/* FINAL RESULT */}
             <div
               className={`final-result ${
@@ -281,7 +306,9 @@ function App() {
                   : "low-risk"
               }`}
             >
+
               <div className="result-top">
+
                 <div>
                   <span className="result-label">
                     FINAL PREDICTION
@@ -297,6 +324,7 @@ function App() {
                 <div className="result-icon">
                   {results.final_prediction === 1 ? "!" : "✓"}
                 </div>
+
               </div>
 
               <p className="result-description">
@@ -305,8 +333,8 @@ function App() {
                   : "The majority of the three machine learning models did not identify a strong diabetes-risk pattern."}
               </p>
 
-              {/* SUMMARY */}
               <div className="summary-grid">
+
                 <div className="summary-item">
                   <span>Average Confidence</span>
 
@@ -337,12 +365,16 @@ function App() {
                     {results.total_models ?? 3}
                   </strong>
                 </div>
+
               </div>
+
             </div>
 
             {/* MODEL COMPARISON */}
             <div className="comparison-card">
+
               <div className="comparison-heading">
+
                 <div>
                   <span className="result-label">
                     MACHINE LEARNING ANALYSIS
@@ -359,9 +391,11 @@ function App() {
                 <div className="models-count">
                   3 Models
                 </div>
+
               </div>
 
               <div className="models-grid">
+
                 <ModelCard
                   title="Random Forest"
                   icon="🌲"
@@ -385,14 +419,18 @@ function App() {
                   getModelClass={getModelClass}
                   getPredictionText={getPredictionText}
                 />
+
               </div>
+
             </div>
 
             {/* VOTING */}
             <div className="voting-card">
+
               <h3>Majority Voting Result</h3>
 
               <div className="vote-row">
+
                 <div className="vote-option">
                   <span>Diabetes</span>
 
@@ -416,12 +454,14 @@ function App() {
                     votes
                   </strong>
                 </div>
+
               </div>
 
               <div className="voting-explanation">
                 Final result is determined by the majority decision
                 of Random Forest, Decision Tree, and Naive Bayes.
               </div>
+
             </div>
 
             {/* MEDICAL NOTE */}
@@ -431,8 +471,10 @@ function App() {
               not be used as a substitute for professional medical
               diagnosis.
             </div>
+
           </section>
         )}
+
       </main>
 
       <footer>
@@ -441,13 +483,15 @@ function App() {
           • Naive Bayes
         </p>
       </footer>
+
     </div>
   );
 }
 
-/* ============================================================
-   INPUT COMPONENT
-============================================================ */
+
+// ============================================================
+// INPUT COMPONENT
+// ============================================================
 
 function InputField({
   label,
@@ -461,7 +505,10 @@ function InputField({
 }) {
   return (
     <div className="input-group">
-      <label htmlFor={name}>{label}</label>
+
+      <label htmlFor={name}>
+        {label}
+      </label>
 
       <input
         id={name}
@@ -474,13 +521,15 @@ function InputField({
         step={step}
         required={required}
       />
+
     </div>
   );
 }
 
-/* ============================================================
-   MODEL CARD COMPONENT
-============================================================ */
+
+// ============================================================
+// MODEL CARD COMPONENT
+// ============================================================
 
 function ModelCard({
   title,
@@ -501,25 +550,34 @@ function ModelCard({
         result.prediction
       )}`}
     >
+
       <div className="model-card-header">
-        <div className="model-icon">{icon}</div>
+
+        <div className="model-icon">
+          {icon}
+        </div>
 
         <div>
           <h3>{title}</h3>
           <span>Individual Model</span>
         </div>
+
       </div>
 
       <div className="model-prediction">
+
         <span>Prediction</span>
 
         <strong>
           {getPredictionText(result.prediction)}
         </strong>
+
       </div>
 
       <div className="confidence">
+
         <div className="confidence-header">
+
           <span>Confidence</span>
 
           <strong>
@@ -527,9 +585,11 @@ function ModelCard({
               ? `${probability.toFixed(2)}%`
               : "N/A"}
           </strong>
+
         </div>
 
         <div className="progress">
+
           <div
             className="progress-bar"
             style={{
@@ -539,7 +599,9 @@ function ModelCard({
               )}%`,
             }}
           ></div>
+
         </div>
+
       </div>
 
       <div className="model-status">
@@ -547,6 +609,7 @@ function ModelCard({
           ? "Risk pattern detected"
           : "No strong risk pattern"}
       </div>
+
     </div>
   );
 }
