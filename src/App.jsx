@@ -6,7 +6,8 @@ import "./App.css";
 // VITE_API_URL=http://127.0.0.1:5000
 //
 // Production:
-// VITE_API_URL=https://your-flask-api.onrender.com
+// Set VITE_API_URL in Vercel Environment Variables to your
+// publicly deployed Flask backend URL.
 const API_URL =
   import.meta.env.VITE_API_URL || "http://127.0.0.1:5000";
 
@@ -98,7 +99,7 @@ function App() {
   };
 
   return (
-    <div>
+    <div className="app">
       {/* HEADER */}
       <header className="header">
         <div className="header-content">
@@ -134,6 +135,7 @@ function App() {
           <div className="card-title">
             <div>
               <h3>Patient Information</h3>
+
               <p>
                 Enter all values accurately for the best model
                 prediction.
@@ -263,7 +265,6 @@ function App() {
 
             <div>
               <strong>Prediction Error</strong>
-
               <p>{error}</p>
             </div>
           </div>
@@ -423,6 +424,7 @@ function App() {
               </div>
             </div>
 
+            {/* MEDICAL NOTE */}
             <div className="medical-note">
               <strong>Important:</strong> This application is an
               educational machine-learning demonstration and should
@@ -435,8 +437,8 @@ function App() {
 
       <footer>
         <p>
-          Diabetes Prediction System • Random Forest • Decision Tree •
-          Naive Bayes
+          Diabetes Prediction System • Random Forest • Decision Tree
+          • Naive Bayes
         </p>
       </footer>
     </div>
@@ -491,6 +493,8 @@ function ModelCard({
     return null;
   }
 
+  const probability = Number(result.probability) || 0;
+
   return (
     <div
       className={`model-card ${getModelClass(
@@ -520,7 +524,7 @@ function ModelCard({
 
           <strong>
             {result.probability !== undefined
-              ? `${Number(result.probability).toFixed(2)}%`
+              ? `${probability.toFixed(2)}%`
               : "N/A"}
           </strong>
         </div>
@@ -530,10 +534,7 @@ function ModelCard({
             className="progress-bar"
             style={{
               width: `${Math.min(
-                Math.max(
-                  Number(result.probability) || 0,
-                  0
-                ),
+                Math.max(probability, 0),
                 100
               )}%`,
             }}
