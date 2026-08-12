@@ -223,7 +223,7 @@ def delete_prediction(prediction_id):
     connection.close()
 
     return deleted
-
+#loading modules
 # ============================================================
 # CREATE DATABASE WHEN MODULE LOADS
 # ============================================================
